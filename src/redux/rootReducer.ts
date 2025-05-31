@@ -7,6 +7,7 @@ import { bannerApiSlice } from "./slices/bannerApiSlice";
 import { authSlice } from "./slices/authSlice";
 import { orderSuccesApiSlice } from "./slices/orderSuccesApiSlice";
 import { purchaseOrderApiSlice } from "./slices/purchaseOrderApiSlice";
+import { officialGoodApiSlice } from "./slices/officialGoodApiSlice";
 
 export const rootReducer = combineReducers({
   auth: authSlice.reducer,
@@ -16,5 +17,6 @@ export const rootReducer = combineReducers({
   [authApiSlice.reducerPath]: authApiSlice.reducer,
   [bannerApiSlice.reducerPath]: bannerApiSlice.reducer,
   [orderSuccesApiSlice.reducerPath]:orderSuccesApiSlice.reducer,
-  [purchaseOrderApiSlice.reducerPath]:purchaseOrderApiSlice.reducer
+  [purchaseOrderApiSlice.reducerPath]:purchaseOrderApiSlice.reducer,
+  [officialGoodApiSlice.reducerPath]:officialGoodApiSlice.reducer
 });

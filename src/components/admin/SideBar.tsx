@@ -4,10 +4,12 @@ import {
   Archive,
   Banknote,
   HeartHandshake,
+  LayoutDashboard,
+  PackageOpen,
   PrinterCheck,
   TvMinimalPlay,
   UserCog,
-  UsersRound
+  UsersRound,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -39,11 +41,11 @@ const SidebarAdmin = () => {
 
   // Danh sách cơ bản không bao gồm "Tài khoản admin"
   const baseItems: MenuItem[] = [
-    // getItem(
-    //   <NavLink to="/admin">Bảng tổng hợp</NavLink>,
-    //   "1",
-    //   <LayoutDashboard width={16} />
-    // ),
+    getItem(
+      <NavLink to="/admin">Bảng tổng hợp</NavLink>,
+      "1",
+      <LayoutDashboard width={16} />
+    ),
     getItem(
       <NavLink to="/admin/parcel">Danh sách kiện hàng</NavLink>,
       "2",
@@ -61,14 +63,20 @@ const SidebarAdmin = () => {
     ]),
 
     getItem(
-      <NavLink to="/admin/order-succes">Kiện hàng xuất kho</NavLink>,
-      "8",
-      <PrinterCheck width={16} />
-    ),
-    getItem(
       <NavLink to="/admin/purchase-order">Đơn hàng đặt hộ</NavLink>,
       "9",
       <HeartHandshake width={16} />
+    ),
+    getItem(
+      <NavLink to="/admin/official-good">Đơn hàng chính ngạch</NavLink>,
+      "88",
+      <PackageOpen width={16} />
+    ),
+
+    getItem(
+      <NavLink to="/admin/order-succes">Kiện hàng xuất kho</NavLink>,
+      "10",
+      <PrinterCheck width={16} />
     ),
   ];
 
@@ -97,7 +105,7 @@ const SidebarAdmin = () => {
   const handleLogout = () => {
     dispatch(logout());
     localStorage.removeItem("token");
-    localStorage.removeItem("user"); 
+    localStorage.removeItem("user");
     navigate("/login");
   };
 

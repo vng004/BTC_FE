@@ -63,7 +63,13 @@ const ListPurchaseOrder = () => {
       dataIndex: "orderCode",
       key: "orderCode",
       width: 150,
-      render: (orderCode: string) => <div>{orderCode}</div>,
+      align: "center" as const,
+    },
+    {
+      title: "Mã MH",
+      dataIndex: "purchaseCode",
+      key: "purchaseCode",
+      width: 160,
       align: "center" as const,
     },
     {
@@ -71,7 +77,6 @@ const ListPurchaseOrder = () => {
       dataIndex: "trackingCode",
       key: "trackingCode",
       width: 150,
-      render: (trackingCode: string) => <div>{trackingCode}</div>,
       align: "center" as const,
     },
     {
@@ -86,9 +91,6 @@ const ListPurchaseOrder = () => {
       dataIndex: "productName",
       key: "productName",
       width: 150,
-      render: (order: PurchaseOrder) => (
-        <Link to={`${order.productLink}`}>{order.productName}</Link>
-      ),
       align: "center" as const,
     },
     {
@@ -96,7 +98,6 @@ const ListPurchaseOrder = () => {
       dataIndex: "quantity",
       key: "quantity",
       width: 100,
-      render: (quantity?: number) => <div>{quantity}</div>,
       align: "center" as const,
     },
     {
@@ -227,7 +228,7 @@ const ListPurchaseOrder = () => {
   const handleSearchChange = (e: any) => {
     const value = e.target.value;
     setKeyword(value);
-    setPage(1); // Reset to page 1 on new search
+    setPage(1); 
     smoothScrollToTop();
   };
 

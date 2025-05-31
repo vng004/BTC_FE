@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery } from "../../Api";
-import { OrderSucces } from "../../interfaces/orderSucces";
+import { OrderSucces } from "../../interfaces/OrderSucces";
 export const orderSuccesApiSlice = createApi({
   reducerPath: "orderSuccesApi",
   baseQuery: baseQuery,
@@ -16,15 +16,31 @@ export const orderSuccesApiSlice = createApi({
     }),
     getOrderSucces: builder.query<
       any,
-      { keyword?: string; page: number; per_page: number,exportCode: string }
+      {
+        keyword?: string;
+        page?: number;
+        per_page?: number;
+        exportCode?: string;
+        start_date?: string;
+        end_date?: string;
+      }
     >({
-      query: ({ keyword = "", page, per_page ,exportCode}) => ({
+      query: ({
+        keyword = "",
+        page,
+        per_page,
+        exportCode,
+        start_date,
+        end_date,
+      }) => ({
         url: `/order-succes`,
         params: {
           keyword,
           page,
           per_page,
-          exportCode
+          exportCode,
+          start_date,
+          end_date,
         },
       }),
       providesTags: ["orderSucces"],
@@ -43,7 +59,7 @@ export const orderSuccesApiSlice = createApi({
       query: ({ id, data }) => ({
         url: `/order-succes/${id}`,
         method: "PATCH",
-        body:data,
+        body: data,
       }),
       invalidatesTags: ["orderSucces"],
     }),

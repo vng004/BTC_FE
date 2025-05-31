@@ -8,14 +8,14 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import { Form, Input, message, Space,  Table } from "antd";
+import { Form, Input, message, Space, Table } from "antd";
 import { Download, FilePenLine, Plus } from "lucide-react";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 import { getTitleTab } from "../../../constants/client";
 import { displayErrorMessage } from "../../../constants/util";
-import { OrderSucces } from "../../../interfaces/orderSucces";
+import { OrderSucces } from "../../../interfaces/OrderSucces";
 import {
   useGetOrderSuccesByIdQuery,
   useUpdateOrderSuccesMutation,

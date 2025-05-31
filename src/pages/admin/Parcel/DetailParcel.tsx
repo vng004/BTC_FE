@@ -5,7 +5,7 @@ import { CircleUser, FilePenLine } from "lucide-react";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getTitleTab } from "../../../constants/client";
 import { formatDateDay } from "../../../constants/util";
 import {
@@ -126,7 +126,7 @@ const DetailParcel = () => {
 
         <div className="flex justify-between gap-x-4">
           <div className="w-full md:w-[48%] bg-white rounded-3xl hover:shadow-md shadow-xl p-10">
-            <div className="flex justify-between items-center mb-15 text-[16px]">
+            <div className="flex justify-between items-center mb-15 text-lg">
               <p>Trạng thái </p>
               <Tag
                 className=" font-semibold py-2 h-10 px-2 min-w-[160px] text-center"
@@ -241,17 +241,17 @@ const DetailParcel = () => {
               </div>
             </div>
           ) : (
-            <Link
-              to={`/admin/customer-edit/${customer?._id}`}
-              className="w-full md:w-[48%] bg-white rounded-3xl hover:shadow-md cursor-text shadow-xl py-6 px-12 space-y-8  "
-            >
-              <div className="flex flex-col items-center justify-center">
-                <CircleUser size={80} strokeWidth={1} />
-                <p className="font-semibold text-2xl">
-                  {customer?.fullName ? customer?.fullName : "Trống"}
-                </p>
-              </div>
-              <div className="text-[16px] space-y-4">
+            <div className="w-full md:w-[48%] bg-white rounded-3xl  shadow-xl  space-y-4 p-6">
+              <div className="text-[16px] space-y-1 py-4 px-6 border border-[#F84563] rounded-md">
+                <h3 className="text-gray-600 text-lg mb-4 border-b-2 pb-2">
+                  Thông tin vận chuyển
+                </h3>
+                <div className="flex justify-between items-center">
+                  <p>Họ và tên:</p>
+                  <p className="font-semibold text-lg">
+                    {customer?.fullName ? customer?.fullName : "Trống"}
+                  </p>
+                </div>
                 <div className="flex justify-between items-center">
                   <p>Mã khách hàng:</p>
                   <p className="font-semibold text-lg">
@@ -285,36 +285,35 @@ const DetailParcel = () => {
                   </p>
                 </div>
               </div>
-            </Link>
-          )}
-        </div>
-
-        <div className="mt-6 bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-gray-600 text-lg mb-4 border-b-2 pb-2">
-            Thông tin vận chuyển
-          </h3>
-          {statusHistory.length > 0 ? (
-            <Timeline
-              items={statusHistory.map((history: any, index: number) => ({
-                key: index, // Thêm key để tránh cảnh báo React
-                color: statusColors[history.status],
-                children: (
-                  <>
-                    <p className="font-semibold text-lg">
-                      {statusLabels[history.status]}
-                    </p>
-                    <p>
-                      Thời gian:{" "}
-                      <span className="text-green-700">
-                        {formatDateDay(history.timestamp)}
-                      </span>
-                    </p>
-                  </>
-                ),
-              }))}
-            />
-          ) : (
-            <p className="text-gray-500">Chưa có thông tin vận chuyển.</p>
+              <div className="text-[16px] space-y-1 py-4 px-6 border border-[#F84563] rounded-md">
+                <h3 className="text-gray-600 text-lg mb-4 border-b-2 pb-2">
+                  Thông tin vận chuyển
+                </h3>
+                {statusHistory.length > 0 ? (
+                  <Timeline
+                    items={statusHistory.map((history: any, index: number) => ({
+                      key: index, // Thêm key để tránh cảnh báo React
+                      color: statusColors[history.status],
+                      children: (
+                        <>
+                          <p className="font-semibold ">
+                            {statusLabels[history.status]}
+                          </p>
+                          <p>
+                            Thời gian:{" "}
+                            <span className="text-green-700">
+                              {formatDateDay(history.timestamp)}
+                            </span>
+                          </p>
+                        </>
+                      ),
+                    }))}
+                  />
+                ) : (
+                  <p className="text-gray-500">Chưa có thông tin vận chuyển.</p>
+                )}
+              </div>
+            </div>
           )}
         </div>
       </Form>

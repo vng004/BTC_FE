@@ -117,3 +117,11 @@ input[type="number"]::-webkit-outer-spin-button {
   color: #ff4667 !important;
   border-color: #ff4667 !important; /* Bỏ viền xanh khi hover */
 }
+
+.ant-upload-wrapper .ant-upload-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+.ant-upload-list-item-container{
+  margin-right: 6px;
+}

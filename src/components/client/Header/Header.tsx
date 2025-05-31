@@ -40,7 +40,7 @@ const Header = () => {
   };
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const getLink = ({ isActive }: any) => {
-    return `border-orange-500 text-[#F84563] px-1 lg:px-2 py-2 rounded-md border-2 ${
+    return  `border-orange-500 text-[#F84563] px-1 lg:px-2 py-2 rounded-md border-2 ${
       isActive
         ? "bg-[#F84563] text-white border border-[#F84563]"
         : "hover:bg-[#F84563] hover:text-white hover:border-[#F84563]"
@@ -54,7 +54,7 @@ const Header = () => {
     >
       <div
         className={` ${!isHomePage && "bg-[#F84563] text-gray-50"} ${
-          headerBg && isHomePage && "bg-[#F84563] text-gray-50" 
+          headerBg && isHomePage && "bg-[#F84563] text-gray-50"
         }`}
       >
         <div className="hidden md:flex items-center justify-between max-w-[768px] md:max-w-[1024px] px-3 lg:p-1 lg:max-w-[1280px] mx-auto ">
@@ -121,11 +121,6 @@ const Header = () => {
                     label: <Link to="/lien-he-dat-hang">Đặt hàng hộ</Link>,
                   },
                   {
-                    key: "/gioi-thieu",
-                    icon: <Award size={18} />,
-                    label: <Link to="/gioi-thieu">Giới thiệu</Link>,
-                  },
-                  {
                     key: "/hang-van-chuyen-chinh-ngach",
                     icon: <ClipboardCheck size={18} />,
                     label: (
@@ -133,6 +128,11 @@ const Header = () => {
                         Hàng chính ngạch
                       </Link>
                     ),
+                  },
+                  {
+                    key: "/gioi-thieu",
+                    icon: <Award size={18} />,
+                    label: <Link to="/gioi-thieu">Giới thiệu</Link>,
                   },
                 ]}
               />
@@ -205,11 +205,11 @@ const Header = () => {
           <NavLink to={"/lien-he-dat-hang"} className={getLink}>
             Đặt hàng hộ
           </NavLink>
-          <NavLink to={"/gioi-thieu"} className={getLink}>
-            Giới thiệu
-          </NavLink>
           <NavLink to={"/hang-van-chuyen-chinh-ngach"} className={getLink}>
             Hàng chính ngạch
+          </NavLink>
+          <NavLink to={"/gioi-thieu"} className={getLink}>
+            Giới thiệu
           </NavLink>
         </div>
       </div>

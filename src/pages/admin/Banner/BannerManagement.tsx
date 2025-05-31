@@ -1,12 +1,4 @@
-import {
-  Button,
-  Form,
-  message,
-  Modal,
-  Table,
-  Checkbox,
-  Upload,
-} from "antd";
+import { Button, Form, message, Modal, Table, Checkbox, Upload } from "antd";
 import { PackagePlus, Pen, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
@@ -321,7 +313,7 @@ const BannerManagement = () => {
       <div className="bg-white rounded-3xl hover:shadow-md shadow-xl p-10">
         {isFetching ? (
           <div className="flex justify-center">
-            <LoadingOutlined  />
+            <LoadingOutlined />
           </div>
         ) : fetchError ? (
           <p className="text-red-500">
@@ -410,7 +402,7 @@ const BannerManagement = () => {
             className="w-full p-3 bg-[#F84563] hover:bg-white hover:text-[#F84563] hover:border-orange-500 border-2 text-white rounded-[50px]"
           >
             {isCreating || isUpdating || uploading
-              ? "Đang xử lý..."
+              ? <LoadingOutlined />
               : editingBanner
               ? "Cập nhật banner"
               : "Tạo banner"}

@@ -7,6 +7,7 @@ import { authApiSlice } from "./slices/authApiSlice";
 import { bannerApiSlice } from "./slices/bannerApiSlice";
 import { orderSuccesApiSlice } from "./slices/orderSuccesApiSlice";
 import { purchaseOrderApiSlice } from "./slices/purchaseOrderApiSlice";
+import { officialGoodApiSlice } from "./slices/officialGoodApiSlice";
 const persistedToken = localStorage.getItem("token");
 const persistedUser = localStorage.getItem("user");
 const preloadedState = {
@@ -26,7 +27,8 @@ export const store = configureStore({
       authApiSlice.middleware,
       bannerApiSlice.middleware,
       orderSuccesApiSlice.middleware,
-      purchaseOrderApiSlice.middleware
+      purchaseOrderApiSlice.middleware,
+      officialGoodApiSlice.middleware
     ),
 });
 export type RootState = ReturnType<typeof store.getState>;

@@ -9,18 +9,19 @@ import {
   Table,
   Tabs,
   Tag,
+  Timeline,
 } from "antd";
+import TextArea from "antd/es/input/TextArea";
 import {
   ArrowBigDown,
   ArrowBigRight,
   CalendarClock,
   CircleCheckBig,
-  CircleUserRound,
   Eye,
   HandCoins,
   PackagePlus,
   PackageSearch,
-  Wallet,
+  Wallet
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -40,6 +41,7 @@ import {
   useAddPurchaseOrderMutation,
   useGetPurchaseOrderByOrderCodeMutation,
   useGetPurchaseOrdersQuery,
+  useUpdatePurchaseOrderMutation,
 } from "../../../redux/slices/purchaseOrderApiSlice";
 
 const CreatePurchaseOrder = () => {
@@ -70,7 +72,8 @@ const CreatePurchaseOrder = () => {
   });
   const [getPurchaseOrder, { data: orderDetail }] =
     useGetPurchaseOrderByOrderCodeMutation();
-
+  const [updatePurchareOrder, { isLoading: isUpdating }] =
+    useUpdatePurchaseOrderMutation();
   useEffect(() => {
     if (orderCode) {
       getPurchaseOrder({ orderCode });
@@ -127,6 +130,42 @@ const CreatePurchaseOrder = () => {
     } catch (err) {
       displayErrorMessage(err);
     }
+  };
+  const handleCancelStatusChange = (id: string) => {
+    Modal.confirm({
+      title: <span className="text-[#ef4d38]">Xác nhận từ chối đặt hàng </span>,
+      content: (
+        <p className="dark:text-[#b9b7c0] text-[#685f78]">
+          Bạn có chắc chắn muốn từ chối đặt đơn hàng sau khi chúng tôi đã báo
+          giá
+        </p>
+      ),
+      okText: "Xác nhận",
+      okType: "danger",
+      okButtonProps: {
+        style: {
+          backgroundColor: "#F84563",
+          borderColor: "#F84563",
+          color: "#fff",
+        },
+      },
+      cancelButtonProps: {
+        style: {
+          backgroundColor: "#fff",
+          color: "#F84563",
+          borderColor: "#F84563",
+        },
+      },
+      cancelText: "Hủy",
+      centered: true,
+      maskClosable: false,
+      icon: null,
+      width: 600,
+      onOk: async () => {
+        await updatePurchareOrder({ id, data: { status: 4 } });
+        setIsModalDetail(false);
+      },
+    });
   };
 
   const onReset = () => {
@@ -237,6 +276,21 @@ const CreatePurchaseOrder = () => {
     },
   ];
 
+  const statusLabels: { [key: number]: string } = {
+    0: " Chưa xác nhận",
+    1: "Đã xác nhận",
+    2: "Đã đặt cọc",
+    3: "Tất toán đơn hàng",
+    4: "Hủy đơn",
+  };
+
+  const statusColors: { [key: number]: string } = {
+    0: "orange",
+    1: "blue",
+    2: "purple",
+    3: "green",
+    4: "red",
+  };
   return (
     <div className="max-w-[768px] md:max-w-[1024px] lg:max-w-[1280px] mx-auto pt-46 md:pt-[155px] space-y-10 p-3">
       <div>
@@ -282,129 +336,160 @@ const CreatePurchaseOrder = () => {
                         </div>
                       </Form>
                     ) : (
-                      <Form form={form} layout="vertical" onFinish={onFinish}>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="space-y-2">
-                            <p>Mã khách hàng</p>
-                            <Input
-                              className="py-3 font-semibold"
-                              disabled
-                              value={customerCode}
-                            />
+                      <Form
+                        form={form}
+                        layout="vertical"
+                        onFinish={onFinish}
+                        className="p-6"
+                      >
+                        {/* Thông tin khách hàng */}
+                        <div className="mb-4">
+                          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                            Thông tin khách hàng
+                          </h2>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                            <Form.Item
+                              label="Mã khách hàng"
+                              name="customerCode"
+                            >
+                              <Input
+                                disabled
+                                className="py-3 font-semibold"
+                                value={customerCode}
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              label="Tên khách hàng"
+                              name="fullName"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng nhập tên khách hàng",
+                                },
+                              ]}
+                            >
+                              <Input
+                                className="py-3"
+                                placeholder="Nhập tên khách hàng"
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              label="Số điện thoại"
+                              name="phone"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng nhập số điện thoại",
+                                },
+                              ]}
+                            >
+                              <Input
+                                className="py-3"
+                                placeholder="Nhập số điện thoại"
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              label="Email"
+                              name="email"
+                              rules={[
+                                {
+                                  type: "email",
+                                  message: "Email không hợp lệ",
+                                },
+                              ]}
+                            >
+                              <Input
+                                className="py-3"
+                                placeholder="Nhập email (tùy chọn)"
+                              />
+                            </Form.Item>
                           </div>
-                          <Form.Item
-                            label="Tên khách hàng"
-                            name="fullName"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Vui lòng nhập tên khách hàng",
-                              },
-                            ]}
-                          >
-                            <Input
-                              className="py-3"
-                              placeholder="Nhập tên khách hàng"
-                            />
-                          </Form.Item>
-                          <Form.Item
-                            label="Số điện thoại"
-                            name="phone"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Vui lòng nhập số điện thoại",
-                              },
-                            ]}
-                          >
-                            <Input
-                              className="py-3"
-                              placeholder="Nhập số điện thoại"
-                            />
-                          </Form.Item>
-                          <Form.Item
-                            label="Email"
-                            name="email"
-                            rules={[
-                              { type: "email", message: "Email không hợp lệ" },
-                            ]}
-                          >
-                            <Input
-                              className="py-3"
-                              placeholder="Nhập email (tùy chọn)"
-                            />
-                          </Form.Item>
-                          <Form.Item
-                            label="Tên sản phẩm"
-                            name="productName"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Vui lòng nhập tên sản phẩm",
-                              },
-                            ]}
-                          >
-                            <Input
-                              className="py-3"
-                              placeholder="Nhập tên sản phẩm"
-                            />
-                          </Form.Item>
-                          <Form.Item
-                            label="Link sản phẩm"
-                            name="productLink"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Vui lòng nhập link sản phẩm",
-                              },
-                            ]}
-                          >
-                            <Input
-                              className="py-3"
-                              placeholder="Nhập link sản phẩm"
-                            />
-                          </Form.Item>
-                          <Form.Item
-                            label="Số lượng"
-                            name="quantity"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Vui lòng nhập số lượng",
-                              },
-                            ]}
-                          >
-                            <Input
-                              className="py-3"
-                              min={1}
-                              placeholder="Nhập số lượng (tùy chọn)"
-                            />
-                          </Form.Item>
-                          <Form.Item
-                            label="Giá trị thực"
-                            name="actualValue"
-                            rules={[
-                              {
-                                required: true,
-                                message: "Vui lòng nhập giá trị thực",
-                              },
-                            ]}
-                          >
-                            <Input
-                              className="py-3"
-                              placeholder="Nhập giá trị thực"
-                            />
-                          </Form.Item>
-                          <Form.Item label="Thông số hàng" name="orderDetails">
-                            <Input.TextArea
-                              className="py-3 w-full"
-                              rows={1}
-                              placeholder="Nhập thông số hàng (tùy chọn)"
-                            />
-                          </Form.Item>
                         </div>
+
+                        {/* Thông tin sản phẩm */}
+                        <div className="mb-4">
+                          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                            Thông tin sản phẩm
+                          </h2>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                            <Form.Item
+                              label="Tên sản phẩm"
+                              name="productName"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng nhập tên sản phẩm",
+                                },
+                              ]}
+                            >
+                              <Input
+                                className="py-3"
+                                placeholder="Nhập tên sản phẩm"
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              label="Link sản phẩm"
+                              name="productLink"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng nhập link sản phẩm",
+                                },
+                              ]}
+                            >
+                              <Input
+                                className="py-3"
+                                placeholder="Nhập link sản phẩm"
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              label="Số lượng"
+                              name="quantity"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng nhập số lượng",
+                                },
+                              ]}
+                            >
+                              <Input
+                                className="py-3"
+                                min={1}
+                                placeholder="Nhập số lượng (tùy chọn)"
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              label="Giá trị thực"
+                              name="actualValue"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng nhập giá trị thực",
+                                },
+                              ]}
+                            >
+                              <Input
+                                className="py-3"
+                                placeholder="Nhập giá trị thực"
+                              />
+                            </Form.Item>
+                          </div>
+                          <div className="w-full">
+                            <Form.Item
+                              label="Thông số hàng"
+                              name="orderDetails"
+                            >
+                              <TextArea
+                                className="py-3 w-full"
+                                rows={6}
+                                placeholder="Nhập thông số hàng (tùy chọn)"
+                              />
+                            </Form.Item>
+                          </div>
+                        </div>
+
                         <Form.Item>
-                          <div className="flex gap-4 mt-6">
+                          <div className="flex gap-x-4 mt-6">
                             <button
                               onClick={onReset}
                               type="reset"
@@ -532,83 +617,130 @@ const CreatePurchaseOrder = () => {
           <Modal
             open={isModalDetail}
             footer={null}
-            width={1200}
+            width={800}
             closeIcon={false}
           >
             {orderDetail && (
-              <div className="md:p-2">
-                <p className="text-xl bg-[#F84563] text-white px-2 py-2 rounded-md">
-                  Chi tiết đơn hàng: {orderDetail && orderDetail.orderCode}
+              <div className="p-4 md:p-6">
+                <p className="text-[17px] md:text-xl bg-[#F84563] text-white px-4 py-2 rounded-md mb-6">
+                  Chi tiết đơn hàng: {orderDetail.orderCode}
                 </p>
-                <div className="md:h-[420px] flex flex-col space-y-4  justify-between mt-4 md:mt-10">
-                  <div className="md:text-lg flex flex-col space-y-4 md:flex-row justify-center md:justify-between">
-                    <div className="flex flex-col justify-center items-center w-full md:w-[35%] border-2 rounded-md py-2">
-                      <CircleUserRound
-                        size={100}
-                        strokeWidth={1}
-                        className="hidden md:block"
-                      />
-                      <CircleUserRound
-                        size={40}
-                        strokeWidth={1}
-                        className="block md:hidden "
-                      />
-                      <p>{orderDetail.fullName}</p>
-                      <div className="flex justify-between w-[330px] md:w-[360px]">
-                        <p>Mã KH: </p>
-                        <p>{orderDetail.customerCode}</p>
-                      </div>
-                      <div className="flex justify-between w-[330px] md:w-[360px]">
-                        <p>Sđt: </p>
-                        <span>
-                          {orderDetail.phone
-                            ? "xxxxx" + orderDetail.phone.slice(4)
-                            : "Trống"}
+
+                <div className="grid grid-cols-1 gap-6">
+                  {/* Thông tin khách hàng */}
+                  <div className="border-2 rounded-md ">
+                    <h2 className="font-semibold  p-4 border-b border-[#F84563]">
+                      <p className="text-lg text-[#F84563]">
+                        Thông tin khách hàng
+                      </p>
+                    </h2>
+                    <div className="space-y-3 p-4 ">
+                      <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">
+                          Họ và tên:
                         </span>
+                        <span>{orderDetail.fullName || "Trống"}</span>
                       </div>
-                      <div className="flex justify-between w-[330px] md:w-[360px]">
-                        <p>Email: </p>
-                        <span>
-                          {orderDetail.email
-                            ? "xxxxx" + orderDetail.email.slice(4)
-                            : "Trống"}
-                        </span>{" "}
+                      <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">
+                          Mã khách hàng:
+                        </span>
+                        <span>{orderDetail.customerCode || "Trống"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">
+                          Số điện thoại:
+                        </span>
+                        <span>{orderDetail.phone || "Trống"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">
+                          Email:
+                        </span>
+                        <span>{orderDetail.email || "Trống"}</span>
                       </div>
                     </div>
-                    <div className="w-full md:w-[60%] border-2 rounded-md px-4 py-2 space-y-1">
-                      <p>Tên sản phẩm: {orderDetail.productName}</p>
-                      <p>
-                        Link sản phẩm:
+                  </div>
+
+                  <div className="border-2 rounded-md ">
+                    <h2 className="font-semibold flex flex-wrap items-center justify-between p-4 border-b border-[#F84563]">
+                      <p className="text-lg text-[#F84563]">
+                        Thông tin đơn hàng
+                      </p>
+                      <div className="space-x-2">
+                        <span className="font-medium text-gray-600">
+                          Thời gian tạo:
+                        </span>
+                        <span>{formatDateDay(orderDetail.createdAt)}</span>
+                      </div>
+                    </h2>
+                    <div className="space-y-3 p-4">
+                      <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">
+                          Tên sản phẩm:
+                        </span>
+                        <span>{orderDetail.productName || "Trống"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">
+                          Link sản phẩm:
+                        </span>
                         <a
                           href={orderDetail.productLink}
-                          className="hover:underline hover:text-[#F84563] pl-1"
+                          className="hover:underline hover:text-[#F84563] truncate max-w-[300px]"
                           target="_blank"
+                          rel="noopener noreferrer"
                         >
-                          {orderDetail.productLink}
+                          {orderDetail.productLink || "Trống"}
                         </a>
-                      </p>
-                      <p>Số lượng: {orderDetail.quantity}</p>
-                      <p>
-                        Thời gian tạo: {formatDateDay(orderDetail.createdAt)}
-                      </p>
-                      <p>Thông số hàng: {orderDetail.orderDetails}</p>
-                      <p>
-                        Giá trị thực: {formatPrice(orderDetail.actualValue)}
-                      </p>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">
+                          Số lượng:
+                        </span>
+                        <span>{orderDetail.quantity || "Trống"}</span>
+                      </div>
 
-                      <p>
-                        Phí nội địa:{" "}
-                        {orderDetail.domesticFee ? orderDetail.domesticFee : 0}đ
-                      </p>
-                      <p>
-                        Tổng tiền:{" "}
-                        {orderDetail.totalAmount ? orderDetail.totalAmount : 0}đ
-                      </p>
-
-                      <p>
-                        Trạng thái:
+                      <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">
+                          Thông số hàng:
+                        </span>
+                        <span>{orderDetail.orderDetails || "Trống"}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">
+                          Giá trị thực:
+                        </span>
+                        <span>
+                          {formatPrice(orderDetail.actualValue) || "0đ"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">
+                          Phí nội địa:
+                        </span>
+                        <span>
+                          {orderDetail.domesticFee
+                            ? `${orderDetail.domesticFee}đ`
+                            : "0đ"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">
+                          Tổng tiền:
+                        </span>
+                        <span>
+                          {orderDetail.totalAmount
+                            ? `${orderDetail.totalAmount}đ`
+                            : "0đ"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-gray-600">
+                          Trạng thái:
+                        </span>
                         <Tag
-                          className="text-sm font-semibold py-2 px-2 min-w-[130px] text-center ml-2"
+                          className="text-sm font-semibold py-2 px-2  text-center"
                           color={
                             orderDetail.status === 0
                               ? "orange"
@@ -629,19 +761,63 @@ const CreatePurchaseOrder = () => {
                             ? "Đã đặt cọc"
                             : orderDetail.status === 3
                             ? "Tất toán đơn hàng"
-                            : "Hủy đơn"}
+                            : "Đơn hàng đã bị hủy"}
                         </Tag>
-                      </p>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex justify-center md:justify-end">
-                    <button
-                      onClick={closeModalDetail}
-                      className="border-2 border-orange-500 bg-[#F84563] text-white  px-10 py-2 rounded-full hover:bg-[#ff7f94] hover:border-[#ff7f94] md:text-lg"
-                    >
-                      Đóng
-                    </button>
+                </div>
+                <div className="mt-6 border rounded-md">
+                  <h2 className="font-semibold  p-4 border-b border-[#F84563]">
+                    <p className="text-lg text-[#F84563]">
+                      Thông tin vận chuyển
+                    </p>
+                  </h2>
+                  <div className="p-4">
+                    {orderDetail.statusHistory.length > 0 ? (
+                      <Timeline
+                        items={orderDetail.statusHistory.map(
+                          (history: any, index: number) => ({
+                            key: index, // Thêm key để tránh cảnh báo React
+                            color: statusColors[history.status],
+                            children: (
+                              <>
+                                <p className="font-semibold">
+                                  {statusLabels[history.status]}
+                                </p>
+                                <p>
+                                  Thời gian:{" "}
+                                  <span className="text-green-700">
+                                    {formatDateDay(history.timestamp)}
+                                  </span>
+                                </p>
+                              </>
+                            ),
+                          })
+                        )}
+                      />
+                    ) : (
+                      <p className="text-gray-500">
+                        Chưa có thông tin vận chuyển.
+                      </p>
+                    )}
                   </div>
+                </div>
+                <div className="flex justify-center md:justify-end mt-6">
+                  <button
+                    onClick={closeModalDetail}
+                    className="border-2 border-orange-500 bg-[#F84563] text-white px-10 py-2 rounded-full hover:bg-[#ff7f94] hover:border-[#ff7f94] md:text-lg"
+                  >
+                    Đóng
+                  </button>
+                  {orderDetail?.status == 0 && (
+                    <button
+                      onClick={() => handleCancelStatusChange(orderDetail._id)}
+                      className="border-2 border-orange-500  text-[#F84563] px-10 py-2 rounded-full hover:bg-[#F84563] hover:border-orange-500 md:text-lg hover:text-white"
+                    >
+                      {isUpdating ? <LoadingOutlined /> : "Từ chối đặt hàng"}
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -733,7 +909,7 @@ const CreatePurchaseOrder = () => {
                 dịch vụ nhập hàng Trung Quốc của chúng tôi.
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 sm:gap-6 lg:gap-8">
               <div
                 className="
               border border-orange-500 rounded-lg shadow-md 

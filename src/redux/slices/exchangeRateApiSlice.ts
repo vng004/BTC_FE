@@ -8,11 +8,8 @@ export const exchangeRateApiSlice = createApi({
   tagTypes: ["Rate"],
   endpoints: (builder) => ({
     getExchangeRate: builder.query<ExchangeRate, void>({
-      query: () => ({
-        url: "/exchange-rate",
-        method: "GET",
-      }),
-      transformResponse:(res:{data:ExchangeRate})=>res.data,
+      query: () => "/exchange-rate",
+      transformResponse: (res: { data: ExchangeRate }) => res.data,
       providesTags: ["Rate"],
     }),
 

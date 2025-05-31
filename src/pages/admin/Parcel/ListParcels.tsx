@@ -118,8 +118,7 @@ const ListParcels = () => {
 
   const handleInspectionChange = async (id: string, checked: boolean) => {
     try {
-      const data = await updateParcel({ id: id, inspection: checked });
-      console.log(data);
+      await updateParcel({ id: id, inspection: checked });
       message.success("Cập nhật trạng thái kiểm hóa thành công!");
     } catch (error) {
       displayErrorMessage(error);
